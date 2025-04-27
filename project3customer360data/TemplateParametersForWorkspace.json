@@ -1,0 +1,51 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "project3customer360data"
+		},
+		"AzureSqlDatabase1_password": {
+			"value": ""
+		},
+		"AzureSynapseAnalytics1_password": {
+			"value": ""
+		},
+		"AzureSynapseAnalytics2_password": {
+			"value": ""
+		},
+		"project3customer360data-WorkspaceDefaultSqlServer_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:project3customer360data.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"value": "project1bootcamp.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"value": "project3"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"value": "aniket"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_server": {
+			"value": "project3customer360data-ondemand.sql.azuresynapse.net"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_database": {
+			"value": "customer360"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
+			"value": "aniket"
+		},
+		"AzureSynapseAnalytics2_properties_typeProperties_server": {
+			"value": "project3customer360data-ondemand.sql.azuresynapse.net"
+		},
+		"AzureSynapseAnalytics2_properties_typeProperties_database": {
+			"value": "customer360"
+		},
+		"AzureSynapseAnalytics2_properties_typeProperties_userName": {
+			"value": "aniket"
+		},
+		"project3customer360data-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://adlsprojectwork.dfs.core.windows.net"
+		}
+	}
+}
