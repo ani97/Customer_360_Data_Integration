@@ -1,0 +1,17 @@
+{
+	"name": "Agents_csv",
+	"properties": {
+		"content": {
+			"query": "CREATE EXTERNAL TABLE agents\n(\n    AgentID int,\n    Name VARCHAR(100),\n    Department VARCHAR(100),\n    Shift VARCHAR(50)\n)\nWITH\n(\n    LOCATION='Agents.csv',\n    DATA_SOURCE=rawdatapath,\n    FILE_FORMAT=csvformat\n)\nGO;\n\n----------------------------------------------\n\nCREATE EXTERNAL TABLE dbo.silver_agents\nWITH (\n    LOCATION = 'Agents/',\n    DATA_SOURCE = silverpath,        \n    FILE_FORMAT = ParquetFormat      \n)\nAS\nSELECT AgentID,\n    ISNULL(Name, 'Unknown') AS Name,\n    ISNULL(Department, 'NA') AS Department,\n    ISNULL(Shift, 'NA') AS Shift\nFROM Agents\nWHERE AgentID IS NOT NULL;\n\n\nSelect * from dbo.silver_agents",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "customer360",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

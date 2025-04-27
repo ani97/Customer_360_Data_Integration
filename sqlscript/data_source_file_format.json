@@ -1,0 +1,17 @@
+{
+	"name": "data_source_file_format",
+	"properties": {
+		"content": {
+			"query": "CREATE EXTERNAL DATA SOURCE rawdatapath\nWITH\n(\n    LOCATION='https://adlsprojectwork.dfs.core.windows.net/project3/bronze/'\n);\n\nCREATE EXTERNAL FILE FORMAT csvformat\nWITH(\n    FORMAT_TYPE=DELIMITEDTEXT,\n    FORMAT_OPTIONS(\n        FIELD_TERMINATOR=',',\n        STRING_DELIMITER='\"',\n        FIRST_ROW=2,\n        ENCODING='UTF8',\n        PARSER_VERSION='2.0'\n    )\n);\n\nCREATE EXTERNAL DATA SOURCE silverpath\nWITH\n(\n    LOCATION='https://adlsprojectwork.dfs.core.windows.net/project3/silver/'\n);\n\nCREATE EXTERNAL FILE FORMAT ParquetFormat\nWITH (\n    FORMAT_TYPE = PARQUET\n);",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "customer360",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

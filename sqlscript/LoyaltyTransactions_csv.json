@@ -1,0 +1,17 @@
+{
+	"name": "LoyaltyTransactions_csv",
+	"properties": {
+		"content": {
+			"query": "DROP EXTERNAL TABLE LoyaltyTransactions;\nGO\n\nCREATE EXTERNAL TABLE LoyaltyTransactions\n(\n    LoyaltyID INT,\n    DateTime DATETIME2,\n    PointsChange INT,\n    Reason VARCHAR(100)\n)WITH\n(\n    LOCATION = 'LoyaltyTransactions.csv',\n    DATA_SOURCE = rawdatapath,\n    FILE_FORMAT = csvformat\n);\nGO\n\n--------------------------------------------\ndrop external table silver_loyaltytransactions\n\nCREATE EXTERNAL TABLE silver_loyaltytransactions\nWITH (\n    LOCATION = 'LoyaltyTransactions/',\n    DATA_SOURCE = silverpath,\n    FILE_FORMAT = ParquetFormat\n)\nAS\nSELECT \n    LoyaltyID,\n    ISNULL(DateTime, '1900-01-01') AS DateTime,\n    ISNULL(PointsChange, 0) AS PointsChange,\n    ISNULL(Reason, 'NA') AS Reason\nFROM LoyaltyTransactions\nWHERE LoyaltyID IS NOT NULL;\nGO\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "customer360",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"name": "Customers_csv",
+	"properties": {
+		"content": {
+			"query": "CREATE EXTERNAL TABLE customers\n(\n    CustomerID int,\n    Name VARCHAR(100),\n    Email VARCHAR(100),\n    Address VARCHAR(200)\n\n)\nWITH\n(\n    LOCATION='Customers.csv',\n    DATA_SOURCE=rawdatapath,\n    FILE_FORMAT=csvformat\n)\nGO;\n\n------------------------------------------------------------\n\nCREATE EXTERNAL TABLE dbo.silver_customers\nWITH (\n    LOCATION = 'Customers/',\n    DATA_SOURCE = silverpath,\n    FILE_FORMAT = ParquetFormat\n)\nAS\nSELECT \n    CustomerID,\n    ISNULL(Name, 'Unknown') AS Name,\n    ISNULL(Email, 'NA') AS Email,\n    ISNULL(Address, 'NA') AS Address\nFROM Customers\nWHERE CustomerID IS NOT NULL;\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "customer360",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

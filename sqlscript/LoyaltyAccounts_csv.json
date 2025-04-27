@@ -1,0 +1,17 @@
+{
+	"name": "LoyaltyAccounts_csv",
+	"properties": {
+		"content": {
+			"query": "CREATE EXTERNAL TABLE LoyaltyAccounts\n(\n    LoyaltyID INT,\n    CustomerID INT,\n    PointsEarned INT,\n    TierLevel VARCHAR(20),\n    JoinDate DATE\n)\nWITH\n(\n    LOCATION = 'LoyaltyAccounts.csv',   \n    DATA_SOURCE = rawdatapath,          \n    FILE_FORMAT = csvformat             \n);\nGO\n\n\n\n----------------------------\nCREATE EXTERNAL TABLE silver_loyaltyaccounts\nWITH (\n    LOCATION = 'LoyaltyAccounts/',\n    DATA_SOURCE = silverpath,\n    FILE_FORMAT = ParquetFormat\n)\nAS\nSELECT \n    LoyaltyID,\n    CustomerID,\n    ISNULL(PointsEarned, 0) AS PointsEarned,\n    ISNULL(TierLevel, 'NA') AS TierLevel,\n    ISNULL(JoinDate, '1900-01-01') AS JoinDate\nFROM LoyaltyAccounts\nWHERE LoyaltyID IS NOT NULL;\nGO\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "customer360",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

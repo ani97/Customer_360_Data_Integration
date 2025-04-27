@@ -1,0 +1,17 @@
+{
+	"name": "OnlineTransactions_csv",
+	"properties": {
+		"content": {
+			"query": "DROP EXTERNAL TABLE OnlineTransactions;\nGO\n\nCREATE EXTERNAL TABLE OnlineTransactions\n(\n    OrderID INT,\n    CustomerID INT,\n    ProductID INT,\n    DateTime DATETIME2,\n    PaymentMethod VARCHAR(100),\n    Amount FLOAT,\n    Status VARCHAR(50)\n)\nWITH\n(\n    LOCATION = 'OnlineTransactions.csv',\n    DATA_SOURCE = rawdatapath,\n    FILE_FORMAT = csvformat\n);\nGO\n\n----------------------------------------------\n\nCREATE EXTERNAL TABLE silver_onlinetransactions\nWITH (\n    LOCATION = 'OnlineTransactions/',\n    DATA_SOURCE = silverpath,\n    FILE_FORMAT = ParquetFormat\n)\nAS\nSELECT \n    OrderID,\n    CustomerID,\n    ProductID,\n    ISNULL(DateTime, '1900-01-01') AS DateTime,\n    ISNULL(PaymentMethod, 'NA') AS PaymentMethod,\n    ISNULL(Amount, 0) AS Amount,\n    ISNULL(Status, 'NA') AS Status\nFROM OnlineTransactions\nWHERE OrderID IS NOT NULL;\nGO\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "customer360",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

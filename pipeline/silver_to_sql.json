@@ -1,0 +1,88 @@
+{
+	"name": "silver_to_sql",
+	"properties": {
+		"activities": [
+			{
+				"name": "Loop_over_folders",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@json('[\n    {\"folder\": \"silver/Customers\", \"table\": \"Customers\"},\n    {\"folder\": \"silver/Products\", \"table\": \"Products\"},\n    {\"folder\": \"silver/Stores\", \"table\": \"Stores\"},\n    {\"folder\": \"silver/Agents\", \"table\": \"Agents\"},\n    {\"folder\": \"silver/LoyaltyAccounts\", \"table\": \"LoyaltyAccounts\"},\n    {\"folder\": \"silver/LoyaltyTransactions\", \"table\": \"LoyaltyTransactions\"},\n    {\"folder\": \"silver/OnlineTransactions\", \"table\": \"OnlineTransactions\"},\n    {\"folder\": \"silver/InStoreTransactions\", \"table\": \"InStoreTransactions\"},\n    {\"folder\": \"silver/CustomerServiceInteractions\", \"table\": \"CustomerServiceInteractions\"}\n]')\n",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Copy_parquet_to_sql",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "ParquetSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@item().folder",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.parquet",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "ParquetReadSettings"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Parquet5",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "AzureSqlTable1",
+									"type": "DatasetReference",
+									"parameters": {
+										"tablename": {
+											"value": "@item().table",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-04-26T11:04:49Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

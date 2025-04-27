@@ -1,0 +1,17 @@
+{
+	"name": "InStoreTransactions_csv",
+	"properties": {
+		"content": {
+			"query": "\nDROP EXTERNAL TABLE dbo.InStoreTransactions;\nGO\n\nCREATE EXTERNAL TABLE dbo.InStoreTransactions\n(\n    TransactionID INT,\n    CustomerID INT,\t\n    StoreID INT,\n    DateTime DATETIME2,\t \n    Amount FLOAT,\n    PaymentMethod VARCHAR(100)\n)\nWITH\n(\n    LOCATION = 'InStoreTransactions.csv',\n    DATA_SOURCE = rawdatapath,\n    FILE_FORMAT = csvformat\n);\nGO\n\n-------------------------------------------\n\nCREATE EXTERNAL TABLE dbo.silver_instoretransactions\nWITH (\n    LOCATION = 'InStoreTransactions/',  \n    DATA_SOURCE = silverpath,\n    FILE_FORMAT = ParquetFormat\n)\nAS\nSELECT \n    TransactionID,\n    CustomerID,\n    StoreID,\n    ISNULL(DateTime, '1900-01-01') AS DateTime,\n    ISNULL(Amount, 0) AS Amount,\n    ISNULL(PaymentMethod, 'NA') AS PaymentMethod\nFROM dbo.InStoreTransactions\nWHERE TransactionID IS NOT NULL;\nGO\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "customer360",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

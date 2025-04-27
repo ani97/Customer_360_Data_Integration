@@ -1,0 +1,17 @@
+{
+	"name": "Products_csv",
+	"properties": {
+		"content": {
+			"query": "DROP EXTERNAL TABLE Products;\nGO\n\nCREATE EXTERNAL TABLE Products\n(\n    ProductID INT,\n    Name VARCHAR(100),\n    Category VARCHAR(100),\n    Price FLOAT\n)\nWITH\n(\n    LOCATION = 'Products.csv',\n    DATA_SOURCE = rawdatapath,\n    FILE_FORMAT = csvformat\n);\nGO\n\n-------------------------------------------------------\n\nCREATE EXTERNAL TABLE silver_products\nWITH (\n    LOCATION = 'Products/',\n    DATA_SOURCE = silverpath,\n    FILE_FORMAT = ParquetFormat\n)\nAS\nSELECT \n    ProductID,\n    ISNULL(Name, 'Unknown') AS Name,\n    ISNULL(Category, 'NA') AS Category,\n    ISNULL(Price, 0) AS Price\nFROM Products\nWHERE ProductID IS NOT NULL;\nGO\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "customer360",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

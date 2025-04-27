@@ -1,0 +1,17 @@
+{
+	"name": "CustomerServiceInteractions_csv",
+	"properties": {
+		"content": {
+			"query": "drop external table CustomerServiceInteractions\n\nCREATE EXTERNAL TABLE CustomerServiceInteractions\n(\n    InteractionID int,\n    CustomerID int,\n    DateTime DATETIME2,\n    AgentID int,\n    IssueType varchar(100),\n    ResolutionStatus varchar(100)\n)\nWITH\n(\n    LOCATION='CustomerServiceInteractions.csv',\n    DATA_SOURCE=rawdatapath,\n    FILE_FORMAT=csvformat\n)\nGO;\n\n--------------------------------------------------------------\ndrop external table dbo.silver_customerserviceinteractions;\nCREATE EXTERNAL TABLE dbo.silver_customerserviceinteractions\nWITH (\n    LOCATION = 'CustomerServiceInteractions/',\n    DATA_SOURCE = silverpath,\n    FILE_FORMAT = ParquetFormat\n)\nAS\nSELECT \n    InteractionID,\n    CustomerID,\n    ISNULL(CAST(DateTime AS DATETIME2), '1900-01-01') AS DateTime,  -- Fill with '1900-01-01'\n    AgentID,\n    ISNULL(IssueType, 'NA') AS IssueType,\n    ISNULL(ResolutionStatus, 'NA') AS ResolutionStatus\nFROM CustomerServiceInteractions\nWHERE InteractionID IS NOT NULL;\n\n\n\n\ndrop EXTERNAL table dbo.silver_customerserviceinteractions",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "customer360",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

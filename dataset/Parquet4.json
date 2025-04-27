@@ -1,0 +1,21 @@
+{
+	"name": "Parquet4",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "project3customer360data-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "silver",
+				"fileSystem": "project3"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

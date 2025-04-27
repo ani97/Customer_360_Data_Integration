@@ -1,0 +1,17 @@
+{
+	"name": "Stores_csv",
+	"properties": {
+		"content": {
+			"query": "DROP EXTERNAL TABLE Stores;\nGO\n\nCREATE EXTERNAL TABLE Stores\n(\n    StoreID INT,\n    Location VARCHAR(200),\n    Manager VARCHAR(100),\n    OpenHours VARCHAR(100)\n)\nWITH\n(\n    LOCATION = 'Stores.csv',\n    DATA_SOURCE = rawdatapath,\n    FILE_FORMAT = csvformat\n);\nGO\n\n-------------------------------------\n\nCREATE EXTERNAL TABLE silver_stores\nWITH (\n    LOCATION = 'Stores/',\n    DATA_SOURCE = silverpath,\n    FILE_FORMAT = ParquetFormat\n)\nAS\nSELECT \n    StoreID,\n    ISNULL(Location, 'NA') AS Location,\n    ISNULL(Manager, 'NA') AS Manager,\n    ISNULL(OpenHours, 'NA') AS OpenHours\nFROM Stores\nWHERE StoreID IS NOT NULL;\nGO\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "customer360",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
