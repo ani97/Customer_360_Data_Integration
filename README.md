@@ -62,6 +62,77 @@ The goal of this project is to build a Customer 360 view by integrating data fro
     - Create external tables pointing to Bronze data.
     - Use CETAS to write cleaned data to the Silver layer.
 
+ ## SQL Scripts for External Tables and Data Transformation
+
+### External Data Sources and File Formats
+
+```sql
+CREATE EXTERNAL DATA SOURCE rawdatapath
+WITH (
+    LOCATION='https://adlsprojectwork.dfs.core.windows.net/project3/bronze/'
+);
+
+CREATE EXTERNAL FILE FORMAT csvformat
+WITH (
+    FORMAT_TYPE=DELIMITEDTEXT,
+    FORMAT_OPTIONS (
+        FIELD_TERMINATOR=',',
+        STRING_DELIMITER='"',
+        FIRST_ROW=2,
+        ENCODING='UTF8',
+        PARSER_VERSION='2.0'
+    )
+);
+
+CREATE EXTERNAL DATA SOURCE silverpath
+WITH (
+    LOCATION='https://adlsprojectwork.dfs.core.windows.net/project3/silver/'
+);
+
+CREATE EXTERNAL FILE FORMAT ParquetFormat
+WITH (
+    FORMAT_TYPE=PARQUET
+);
+```
+
+### External Tables and CETAS
+
+```sql
+CREATE EXTERNAL TABLE agents (
+    AgentID INT,
+    Name VARCHAR(100),
+    Department VARCHAR(100),
+    Shift VARCHAR(50)
+)
+WITH (
+    LOCATION='Agents.csv',
+    DATA_SOURCE=rawdatapath,
+    FILE_FORMAT=csvformat
+);
+```
+
+#### Write Cleaned Data to Silver Layer
+
+```sql
+CREATE EXTERNAL TABLE dbo.silver_agents
+WITH (
+    LOCATION='Agents/',
+    DATA_SOURCE=silverpath,
+    FILE_FORMAT=ParquetFormat
+)
+AS
+SELECT AgentID,
+       ISNULL(Name, 'Unknown') AS Name,
+       ISNULL(Department, 'NA') AS Department,
+       ISNULL(Shift, 'NA') AS Shift
+FROM agents
+WHERE AgentID IS NOT NULL;
+
+-- Validate the data
+SELECT * FROM dbo.silver_agents;
+```
+
+
 ### 4. Create Table Schema in Azure SQL Database
 
 ```sql
@@ -200,72 +271,3 @@ GROUP BY AgentID;
 - Build visualizations and publish reports to Fabric Workspace.
 
 
-## SQL Scripts for External Tables and Data Transformation
-
-### External Data Sources and File Formats
-
-```sql
-CREATE EXTERNAL DATA SOURCE rawdatapath
-WITH (
-    LOCATION='https://adlsprojectwork.dfs.core.windows.net/project3/bronze/'
-);
-
-CREATE EXTERNAL FILE FORMAT csvformat
-WITH (
-    FORMAT_TYPE=DELIMITEDTEXT,
-    FORMAT_OPTIONS (
-        FIELD_TERMINATOR=',',
-        STRING_DELIMITER='"',
-        FIRST_ROW=2,
-        ENCODING='UTF8',
-        PARSER_VERSION='2.0'
-    )
-);
-
-CREATE EXTERNAL DATA SOURCE silverpath
-WITH (
-    LOCATION='https://adlsprojectwork.dfs.core.windows.net/project3/silver/'
-);
-
-CREATE EXTERNAL FILE FORMAT ParquetFormat
-WITH (
-    FORMAT_TYPE=PARQUET
-);
-```
-
-### External Tables and CETAS
-
-```sql
-CREATE EXTERNAL TABLE agents (
-    AgentID INT,
-    Name VARCHAR(100),
-    Department VARCHAR(100),
-    Shift VARCHAR(50)
-)
-WITH (
-    LOCATION='Agents.csv',
-    DATA_SOURCE=rawdatapath,
-    FILE_FORMAT=csvformat
-);
-```
-
-#### Write Cleaned Data to Silver Layer
-
-```sql
-CREATE EXTERNAL TABLE dbo.silver_agents
-WITH (
-    LOCATION='Agents/',
-    DATA_SOURCE=silverpath,
-    FILE_FORMAT=ParquetFormat
-)
-AS
-SELECT AgentID,
-       ISNULL(Name, 'Unknown') AS Name,
-       ISNULL(Department, 'NA') AS Department,
-       ISNULL(Shift, 'NA') AS Shift
-FROM agents
-WHERE AgentID IS NOT NULL;
-
--- Validate the data
-SELECT * FROM dbo.silver_agents;
-```
